@@ -1,1 +1,83 @@
+%{
+#include <string.h>
+#include <stdlib.h>
+#include "y.tab.h"
+int line_count = 0;
+yylType yylval;
+%}
+%option noyywrap
 
+DELIM ([ \t])
+WHITESPACES ({DELIM}+)
+LETTER ([a-zA-Z])
+DIGIT ([0-9])
+IDENTIFIER ({LETTER}({LETTER}|{DIGIT})*)
+NONZERO ([1-9])
+NUMBER (0|{NONZERO}{DIGIT}*)
+
+%%
+
+\n  {
+        ++line_count;
+        return (int)'\n';
+    }
+
+"<=" { return SE; }
+">=" { return GE; }
+"&" { return AND; }
+"|" { return OR; }
+"==" { return EQ; }
+"!=" { return DIF; }
+"+" { return PLUS; }
+"-" { return MINUS; }
+"*" { return MUL; } 
+"/" { return DIV; }
+"%" { return MOD; }
+"=" { return ASSIGN; }
+"<" { return SM; }
+">" { return GR; }
+":" { return DECL; }
+
+"{" { return (int)'{'; }
+"}" { return (int)'}'; }
+"[" { return (int)'['; }
+"]" { return (int)']'; }
+"(" { return (int)'('; }
+")" { return (int)')'; }
+"," { return (int)','; }
+
+func { return FUNC; }
+master { return MASTER; }
+int { return INT; }
+mut { return MUT; }
+None { return NONE; }
+char { return CHAR; }
+bool { return BOOL; }
+read { return READ; }
+write { return WRITE; }
+if { return IF; }
+else { return ELSE; }
+while { return WHILE; }
+for { return FOR; }
+
+{WHITESPACES} { ; }
+{IDENTIFIER}    {
+                    yylval.string=(char *)malloc((yyleng+1)*(sizeof(char)));
+                    strncpy(yylval.string, yytext, yyleng + 1);
+                    return ID;
+                }
+{NUMBER}    {
+                yylval.integer = atoi(yytext);
+                return NUM;
+            }
+"'"."'" {
+            yylval.character = yytext[1];
+            return CHARACTER;
+        }
+.   { 
+        printf("\nSyntax Error on Line %d\n", line_count);
+    }
+
+%%
+
+/* The function yywrap() int yywrap(){return 1;} */
