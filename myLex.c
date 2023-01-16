@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "y.tab.h"
-extern yylType yylval;
 extern int line_count;
 int main(int argc, char *argv[]) // myLex.c
 {
@@ -17,28 +16,25 @@ int main(int argc, char *argv[]) // myLex.c
 
     while((s=yylex())) {
         switch(s) {
-            case '\n':
-                printf("\n");
-                break;
-            case '{':
+            case OPENCURLY:
                 printf("<{>");
                 break;
-            case '}':
+            case CLOSEDCURLY:
                 printf("<}>");
                 break;
-            case '[':
+            case OPENSQARED:
                 printf("<[>");
                 break;
-            case ']':
+            case CLOSEDSQARED:
                 printf("<]>");
                 break;
-            case '(':
+            case OPEN:
                 printf("<(>");
                 break;
-            case ')':
+            case CLOSED:
                 printf("<)>");
                 break;
-            case ',':
+            case COMMA:
                 printf("<,>");
                 break;
             case PLUS:
@@ -77,7 +73,7 @@ int main(int argc, char *argv[]) // myLex.c
             case DIF:
                 printf("<!=>");
                 break;
-            case DECL:
+            case COLON:
                 printf("<:>");
                 break;
             case MOD:
@@ -102,11 +98,10 @@ int main(int argc, char *argv[]) // myLex.c
                 printf("<int>");
                 break;
             case NUM:
-                printf("<NUMBER, %d>", yylval.integer);
+                printf("<NUMBER>");
                 break;
             case ID:
-                printf("<IDENTIFIER, %s>", yylval.string);
-                free(yylval.string);
+                printf("<IDENTIFIER>");
                 break;
             case FUNC:
                 printf("<func>");
@@ -121,7 +116,7 @@ int main(int argc, char *argv[]) // myLex.c
                 printf("<char>");
                 break;
             case CHARACTER:
-                printf("<CHARACTER, \"%c\">", yylval.character);
+                printf("<CHARACTER>");
                 break;
             case READ:
                 printf("<read>");

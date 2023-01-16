@@ -1,0 +1,1 @@
+func master(): None { mut a: int }

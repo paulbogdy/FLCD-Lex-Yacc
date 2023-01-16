@@ -7,12 +7,14 @@ func master(): None {
     read(b)
     read(c)
 
-    if(a > b & a > c) {
+    if((a > b) & (a > c)) {
         write(a)
-    } else if(b > a & b > c) {
-        write(b)
     } else {
-        write(c)
+        if((b > a) & (b > c)) {
+            write(b)
+        } else {
+            write(c)
+        }
     }
 }
     

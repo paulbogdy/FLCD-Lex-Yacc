@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include "y.tab.h"
 int line_count = 0;
-yylType yylval;
 %}
 %option noyywrap
 
@@ -19,7 +18,6 @@ NUMBER (0|{NONZERO}{DIGIT}*)
 
 \n  {
         ++line_count;
-        return (int)'\n';
     }
 
 "<=" { return SE; }
@@ -36,44 +34,38 @@ NUMBER (0|{NONZERO}{DIGIT}*)
 "=" { return ASSIGN; }
 "<" { return SM; }
 ">" { return GR; }
-":" { return DECL; }
 
-"{" { return (int)'{'; }
-"}" { return (int)'}'; }
-"[" { return (int)'['; }
-"]" { return (int)']'; }
-"(" { return (int)'('; }
-")" { return (int)')'; }
-"," { return (int)','; }
+":" { return COLON; }
+"{" { return OPENCURLY; }
+"}" { return CLOSEDCURLY; }
+"[" { return OPENSQARED; }
+"]" { return CLOSEDSQARED; }
+"(" { return OPEN; }
+")" { return CLOSED; }
+"," { return COMMA; }
 
-func { return FUNC; }
-master { return MASTER; }
-int { return INT; }
-mut { return MUT; }
-None { return NONE; }
-char { return CHAR; }
-bool { return BOOL; }
-read { return READ; }
-write { return WRITE; }
 if { return IF; }
 else { return ELSE; }
 while { return WHILE; }
 for { return FOR; }
+int { return INT; }
+char { return CHAR; }
+bool { return BOOL; }
+func { return FUNC; }
+master { return MASTER; }
+None { return NONE; }
+mut { return MUT; }
+read { return READ; }
+write { return WRITE; }
+
+True { return TRUE; }
+False { return FALSE; }
 
 {WHITESPACES} { ; }
-{IDENTIFIER}    {
-                    yylval.string=(char *)malloc((yyleng+1)*(sizeof(char)));
-                    strncpy(yylval.string, yytext, yyleng + 1);
-                    return ID;
-                }
-{NUMBER}    {
-                yylval.integer = atoi(yytext);
-                return NUM;
-            }
-"'"."'" {
-            yylval.character = yytext[1];
-            return CHARACTER;
-        }
+
+{IDENTIFIER} { return ID; }
+{NUMBER} { return NUM; }
+"'"."'" { return CHARACTER; }
 .   { 
         printf("\nSyntax Error on Line %d\n", line_count);
     }
